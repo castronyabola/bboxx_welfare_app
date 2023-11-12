@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "49303567735",
+    "project_id": "bboxx-welfare-84ddc",
+    "storage_bucket": "bboxx-welfare-84ddc.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:49303567735:android:7430fa3bad98c9e3fbf572",
+        "android_client_info": {
+          "package_name": "com.globsoko.bboxxwelfare"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "49303567735-mm4bsg2cqd3g4a9ptguuqekfl7sojtia.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.globsoko.bboxxwelfare",
+            "certificate_hash": "f0b182558dfabe4d64b638d28539b5118e5c56b1"
+          }
+        },
+        {
+          "client_id": "49303567735-qe70ack9b31l8mi6kjhj9f212k75mrof.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyALfjPGqDTWZ5lhitkBWcvzWOuLkwRzqIk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "49303567735-qe70ack9b31l8mi6kjhj9f212k75mrof.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
