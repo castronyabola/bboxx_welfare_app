@@ -37,11 +37,12 @@ class _HomePageState extends State<HomePage> {
   String ipAddress = 'Loading...';
 
   final FirebaseMessaging _fcm = FirebaseMessaging.instance;
-
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   @override
   void initState() {
     if (!mounted) return;
     super.initState();
+    //updateDocuments();
     getInitialData()
         .then((value) => createAccount()
         .then((value) => getData()
@@ -49,6 +50,30 @@ class _HomePageState extends State<HomePage> {
 
     _initPackageInfo();
     sendLog('logs', 'Home Screen Launched');
+  }
+  Future<void> updateDocuments() async {
+    try {
+      QuerySnapshot snapshot = await _firestore
+          .collection('welfareUsers')
+          .where('savingsStartDate', isNull: false)
+          .get();
+
+      for (QueryDocumentSnapshot doc in snapshot.docs) {
+        // Update the 'loanAdminApproval' and 'loanGuarantorApproval' fields.
+        await _firestore.collection('welfareUsers').doc(doc.id).update({
+          'guarantorBalance': doc.get('mySavings'), // You can set the initial value here.
+          //'selectedGuarantorCounter': 0, // You can set the initial value here.
+        });
+      }
+
+      // Show a success message or handle further actions.
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('Documents updated successfully'),
+      ));
+    } catch (e) {
+      // Handle errors here.
+      print('Error: $e');
+    }
   }
   encrypt.Key generateAESKey(String secretKey) {
     // Ensure the secretKey is either 128, 192, or 256 bits long.

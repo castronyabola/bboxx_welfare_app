@@ -961,7 +961,8 @@ class _AccountCreationPageState extends State<AccountCreationPage> {
       'loanPeriod': 0,
       'loanRequested': 0,
       'myLoan': 0,
-      'reasonForLoan': ''
+      'reasonForLoan': '',
+      'guarantorBalance': 0
     });
     setState(() {
       personalDetailsSubmitted = true;

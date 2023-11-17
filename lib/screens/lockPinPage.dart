@@ -1,9 +1,7 @@
 import 'dart:async';
+import 'dart:convert';
 
-import 'package:animated_splash_screen/animated_splash_screen.dart';
-import 'package:bboxx_welfare_app/models/Account.dart';
 import 'package:bboxx_welfare_app/models/navigation.dart';
-import 'package:bboxx_welfare_app/screens/pageHandler.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -16,6 +14,8 @@ import 'package:provider/provider.dart';
 import 'package:random_string_generator/random_string_generator.dart';
 
 import '../google_signin_provider.dart';
+import 'package:encrypt/encrypt.dart' as encrypt;
+import 'package:http/http.dart' as http;
 
 class LockPinPage extends StatefulWidget {
 
@@ -50,6 +50,12 @@ class _LockPinPageState extends State<LockPinPage> {
 
   bool editProfile;
 
+  final String baseUrl = 'https://gvlb1ub624.execute-api.us-east-1.amazonaws.com/prod/sqs';
+  final String authToken = 'RLFbz206A47vzWYltVvMR1chg4texn5U8OKvVW7z';
+  final secretKey = 'Snyaca7590231234';
+
+  String generatedPin = '';
+
   @override
   void initState() {
     if (!mounted) return;
@@ -57,7 +63,54 @@ class _LockPinPageState extends State<LockPinPage> {
     editProfile = false;
     getData();
   }
+  encrypt.Key generateAESKey(String secretKey) {
+    // Ensure the secretKey is either 128, 192, or 256 bits long.
+    final validKeyLengths = [16, 24, 32]; // In bytes (128, 192, 256 bits)
+    final keyBytes = utf8.encode(secretKey);
+    final keyLength = keyBytes.length;
 
+    if (!validKeyLengths.contains(keyLength)) {
+      throw ArgumentError('Invalid key length. Key must be 128, 192, or 256 bits long.');
+    }
+
+    return encrypt.Key(keyBytes);
+  }
+  String encryptString(String input, String secKey) {
+    final key = generateAESKey(secretKey);
+    final iv = encrypt.IV.fromLength(16); // 16 bytes for AES encryption
+
+    final encrypter = encrypt.Encrypter(encrypt.AES(key, mode: encrypt.AESMode.cbc));
+
+    final encrypted = encrypter.encrypt(input, iv: iv);
+
+    return encrypted.base64;
+  }
+  Future<void> sendEmail(String PIN) async {
+    final encryptedEmail = encryptString(user.email, secretKey);
+    final encryptedRandomPin = encryptString(PIN, secretKey);
+    final encryptedAuthToken = encryptString(authToken, secretKey);
+
+    var headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $encryptedAuthToken'
+    };
+    var request = http.Request('POST', Uri.parse('$baseUrl'));
+    request.body = json.encode({
+      "headers": headers,
+      "body": "{\"email\": \"$encryptedEmail\", \"new_pin\": \"$encryptedRandomPin\"}"
+    });
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      //print('Email Message sent.');
+    }
+    else {
+      print(response.reasonPhrase);
+    }
+
+  }
   var currencyFormat = new NumberFormat.currency(locale: "en_US",
       symbol: "KES ", decimalDigits: 0);
 
@@ -155,16 +208,16 @@ class _LockPinPageState extends State<LockPinPage> {
       });
     });
   }
-
   upDateResetPin() async {
-    String resetPinHolder = pinGenerator.generate();
+    String generatedPin = pinGenerator.generate();
+    sendEmail(generatedPin);
     if (!mounted) return;
     setState(() {
       FirebaseFirestore.instance
           .collection("welfareUsers")
           .doc(phoneNumber)
           .update({
-        'resetPin': resetPinHolder,
+        'resetPin': generatedPin,
         'myPin': null,
       }).then((value) {
         return Navigator.push(
@@ -173,20 +226,20 @@ class _LockPinPageState extends State<LockPinPage> {
       });
 
     });
-    FirebaseFirestore.instance
-        .collection('mail')
-        .add(
-        {
-          'to': user.email,
-          'cc':'info@globsoko.com',
-          'message': {
-            'subject': 'PIN Reset',
-            'text': 'Hi ${myName}, Please find your reset PIN here: ${resetPinHolder}\n'
-                '\n'
-                'Bboxx Welfare',
-          },
-        }
-    );
+    // FirebaseFirestore.instance
+    //     .collection('mail')
+    //     .add(
+    //     {
+    //       'to': user.email,
+    //       'cc':'info@globsoko.com',
+    //       'message': {
+    //         'subject': 'PIN Reset',
+    //         'text': 'Hi ${myName}, Please find your reset PIN here: ${resetPinHolder}\n'
+    //             '\n'
+    //             'Bboxx Welfare',
+    //       },
+    //     }
+    // );
   }
   Future<bool> _onBackPressed() {
     return showDialog(

@@ -418,7 +418,7 @@ class _GuarantorApprovalsState extends State<GuarantorApprovals> {
                                                 TextButton(
                                                   child: Text('Approve',style: TextStyle(color:Colors.white)),
                                                   onPressed: () async{
-                                                    sendLog('logs','Guarantor Request for loan of ${currencyFormat.format(double.parse(document['loanRequested']))} from ${document['guarantee']} Approved by ${myName}');
+                                                    sendLog('logs','Guarantor Request for loan of ${currencyFormat.format((document['loanRequested']))} from ${document['guarantee']} Approved by ${myName}');
                                                     await Navigator.pop(context);
                                                     loanRequested = document['loanRequested'];
                                                     await FirebaseFirestore.instance
@@ -459,7 +459,7 @@ class _GuarantorApprovalsState extends State<GuarantorApprovals> {
                                                 TextButton(
                                                   child: Text('Reject',style: TextStyle(color:Colors.white)),
                                                   onPressed: () async{
-                                                    sendLog('logs','Guarantor Request for loan of ${currencyFormat.format(double.parse(document['loanRequested']))} from ${document['guarantee']} Rejected by ${myName}');
+                                                    sendLog('logs','Guarantor Request for loan of ${currencyFormat.format((document['loanRequested']))} from ${document['guarantee']} Rejected by ${myName}');
                                                     await Navigator.pop(context);
                                                       await FirebaseFirestore.instance
                                                           .collection("welfareUsers")
@@ -493,7 +493,7 @@ class _GuarantorApprovalsState extends State<GuarantorApprovals> {
                                                 TextButton(
                                                   child: Text('Yes',style: TextStyle(color:Colors.white)),
                                                   onPressed: () async{
-                                                    sendLog('logs','Guarantor Request for loan of ${currencyFormat.format(double.parse(document['loanRequested']))} from ${document['guarantee']} Withdrawn by ${myName}');
+                                                    sendLog('logs','Guarantor Request for loan of ${currencyFormat.format((document['loanRequested']))} from ${document['guarantee']} Withdrawn by ${myName}');
                                                     await Navigator.pop(context);
                                                     loanRequested = document['loanRequested'];
                                                     await FirebaseFirestore.instance

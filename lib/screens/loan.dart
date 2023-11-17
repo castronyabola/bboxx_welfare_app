@@ -1302,10 +1302,12 @@ class _LoanPageState extends State<LoanPage> {
                      }
                        snapshot.data.exists? maxLoanAmount =
                            ((snapshot.data['mySavings'] * 3) - snapshot.data['loanDue']).toDouble():null;
-                       return snapshot.data.exists? Column(
+                       return snapshot.data.exists?
+                       Column(
                            children: [
                              SizedBox(height: 20),
-                             loanRequested != 0 ? Row(
+                             loanRequested != 0 ?
+                             Row(
                                mainAxisAlignment: MainAxisAlignment.center,
                                children: [
                                  (acceptedGuarantorCounter >= 3 ) || (loanRequested <= mySavings) ?
@@ -1350,9 +1352,10 @@ class _LoanPageState extends State<LoanPage> {
                                ],
                              ) :
                              SizedBox(),
-                             loanRequested != 0 ? Padding(
+                             loanRequested != 0 ?
+                             Padding(
                                padding: EdgeInsets.symmetric(
-                                   horizontal: 10.0, vertical: 40.0),
+                                   horizontal: 10.0, vertical: 20.0),
                                child: Container(
                                    decoration: BoxDecoration(
                                      color: Theme
@@ -1573,7 +1576,7 @@ class _LoanPageState extends State<LoanPage> {
                                          endIndent: 12,
                                          thickness: 1,
                                        ),
-                                       SizedBox(height: size.height * 0.075),
+                                       SizedBox(height: size.height * 0.04),
                                        ElevatedButton(
                                          onPressed: () async{
                                            await getData();
@@ -1605,12 +1608,14 @@ class _LoanPageState extends State<LoanPage> {
                                            style: TextStyle(color: Colors.lightBlue),
                                          ),
                                        ),
-                                       SizedBox(height: size.height * 0.025),
+                                       SizedBox(height: size.height * 0.01),
                                      ],
                                    )
                                ),
-                             ) : Text(''),
-                             snapshot.data['loanRequested'] == 0 ? Padding(
+                             ) :
+                             Text(''),
+                             snapshot.data['loanRequested'] == 0 ?
+                             Padding(
                                padding: const EdgeInsets.symmetric(
                                    horizontal: 10.0, vertical: 1.0),
                                child: Container(
@@ -2247,7 +2252,7 @@ class _LoanPageState extends State<LoanPage> {
                                      ),
                                      Padding(
                                        padding: EdgeInsets.all(4.0),
-                                       child: Text('Status: $withdrawalRequestStatus'),
+                                       child: Text('$withdrawalRequestStatus'),
                                      ),
                                    ],
                                  )
@@ -2320,7 +2325,7 @@ class _LoanPageState extends State<LoanPage> {
                                        ),
                                        Padding(
                                          padding: const EdgeInsets.all(8.0),
-                                         child: Text('Request Amount: ${currencyFormat.format(withdrawalAmount)}'),
+                                         child: Text('Amount: ${currencyFormat.format(withdrawalAmount)}'),
                                        ),
                                      ],
                                    ),
